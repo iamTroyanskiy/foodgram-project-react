@@ -70,14 +70,15 @@ class Recipe(models.Model):
         max_length=60,
         verbose_name='Название',
     )
-    pubdate = models.DateField(
+    pub_date = models.DateTimeField(
         auto_now_add=True,
+        verbose_name='Дата публикации',
     )
     image = models.ImageField(
         upload_to='recipes/images/',
         verbose_name='Изображение',
     )
-    description = models.TextField(
+    text = models.TextField(
         verbose_name='Описание',
     )
     ingredients = models.ManyToManyField(
@@ -100,7 +101,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ['-pubdate']
+        ordering = ['-pub_date']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         constraints = [
@@ -140,3 +141,4 @@ class RecipeIngredient(models.Model):
                 fields=['recipe', 'ingredient'],
             ),
         ]
+

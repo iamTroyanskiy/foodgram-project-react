@@ -14,11 +14,21 @@ class RecipeAdmin(admin.ModelAdmin):
         'pk',
         'author',
         'name',
-        'pubdate',
+        'pub_date',
         'image',
-        'description',
+        'text',
         'cooking_time',
     )
+    fields = (
+        'author',
+        'name',
+        'pub_date',
+        'image',
+        'text',
+        'cooking_time',
+        'tags'
+    )
+    readonly_fields = ('pub_date',)
     search_fields = ('name',)
     empty_value_display = '-пусто-'
     inlines = (IngredientInLine, )
