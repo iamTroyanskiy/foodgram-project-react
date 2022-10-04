@@ -14,6 +14,7 @@ User = get_user_model()
 class UserViewSet(DjoserUserViewSet, ):
     pass
 
+
     # @action(methods=['get', 'post', 'delete'], detail=True)
     # def subscribe(self, request, id):
     #     return self.add_delete_relationships(id, conf.SUBSCRIBE_M2M)

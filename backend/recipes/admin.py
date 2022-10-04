@@ -26,7 +26,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'image',
         'text',
         'cooking_time',
-        'tags'
+        'tags',
     )
     readonly_fields = ('pub_date',)
     search_fields = ('name',)
@@ -56,5 +56,13 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', 'measurement_unit')
     empty_value_display = '-пусто-'
 
+@admin.register(RecipeIngredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'recipes',
+        'ingredients',
+    )
+    empty_value_display = '-пусто-'
 
 #dmin.site.register(RecipeIngredient)

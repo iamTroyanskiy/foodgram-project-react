@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/auth/', include('auth_api.urls', namespace='api_auth')),
     path('api/', include('users.urls', namespace='api_users')),
     path('api/', include('recipes.urls', namespace='recipes')),
+
 ]
 
 if settings.DEBUG:

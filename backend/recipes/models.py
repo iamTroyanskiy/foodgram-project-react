@@ -41,6 +41,7 @@ class Tag(models.Model):
     )
     color = models.CharField(
         max_length=7,
+        unique=True,
         validators=[hex_validator, ],
         verbose_name='Цвет',
         help_text='Цветовой HEX-код (например, #49B64E).'
@@ -62,7 +63,7 @@ class Tag(models.Model):
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
-        related_name='recipe',
+        related_name='recipes',
         on_delete=models.CASCADE,
         verbose_name='Имя автора',
     )
@@ -83,6 +84,7 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
+        related_name='recipes',
         through='RecipeIngredient',
         verbose_name='Ингредиенты',
         help_text='Продукты для приготовления блюда по рецепту',
@@ -98,6 +100,16 @@ class Recipe(models.Model):
         ],
         verbose_name='Время приготовления',
         help_text='Время приготовления в минутах'
+    )
+    favorite = models.ManyToManyField(
+        User,
+        verbose_name='Понравившиеся рецепты',
+        related_name='favorites',
+    )
+    added_users = models.ManyToManyField(
+        User,
+        verbose_name='Список покупок',
+        related_name='shopping_cart',
     )
 
     class Meta:
@@ -116,13 +128,15 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    recipe = models.ForeignKey(
+    recipes = models.ForeignKey(
         Recipe,
+        related_name='ingredients_amount',
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
     )
-    ingredient = models.ForeignKey(
+    ingredients = models.ForeignKey(
         Ingredient,
+        related_name='amount_for_recipe',
         on_delete=models.CASCADE,
         verbose_name='Ингредиент'
     )
@@ -138,7 +152,7 @@ class RecipeIngredient(models.Model):
         constraints = [
             models.UniqueConstraint(
                 name='recipe_ingredient_unique',
-                fields=['recipe', 'ingredient'],
+                fields=['recipes', 'ingredients'],
             ),
         ]
 
