@@ -1,5 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (
+    MinValueValidator,
+    RegexValidator,
+    MinLengthValidator
+)
 from django.db import models
 
 User = get_user_model()
@@ -26,9 +30,8 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-
     hex_validator = RegexValidator(
-        regex=r'^#[A-Fa-f0-9]{6}$',
+        regex=r'^#[A-Fa-f0-9]{3,6}$',
         message=(
             'Введите валидный цветовой HEX-код!'
         )
@@ -68,8 +71,11 @@ class Recipe(models.Model):
         verbose_name='Имя автора',
     )
     name = models.CharField(
-        max_length=60,
+        max_length=200,
         verbose_name='Название',
+        validators=[
+            MinLengthValidator(3)
+        ],
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
@@ -103,12 +109,10 @@ class Recipe(models.Model):
     )
     favorite = models.ManyToManyField(
         User,
-        verbose_name='Понравившиеся рецепты',
         related_name='favorites',
     )
-    added_users = models.ManyToManyField(
+    shopping_cart = models.ManyToManyField(
         User,
-        verbose_name='Список покупок',
         related_name='shopping_cart',
     )
 
@@ -119,7 +123,7 @@ class Recipe(models.Model):
         constraints = [
             models.UniqueConstraint(
                 name='author_recipe_unique',
-                fields=['author', 'name'],
+                fields=('author', 'name',)
             ),
         ]
 
@@ -128,13 +132,13 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    recipes = models.ForeignKey(
+    recipe = models.ForeignKey(
         Recipe,
-        related_name='ingredients_amount',
+        related_name='ingredient_amount',
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
     )
-    ingredients = models.ForeignKey(
+    ingredient = models.ForeignKey(
         Ingredient,
         related_name='amount_for_recipe',
         on_delete=models.CASCADE,
@@ -152,7 +156,6 @@ class RecipeIngredient(models.Model):
         constraints = [
             models.UniqueConstraint(
                 name='recipe_ingredient_unique',
-                fields=['recipes', 'ingredients'],
+                fields=['recipe', 'ingredient'],
             ),
         ]
-

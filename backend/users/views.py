@@ -1,22 +1,43 @@
 from django.contrib.auth import get_user_model
-from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.response import Response
-
 from djoser.views import UserViewSet as DjoserUserViewSet
 
-from api.pagination import PageLimitPagination
+from api.mixins import AddDeleteM2MMixin
 from .serializers import UserSerializer
 
 User = get_user_model()
 
 
-class UserViewSet(DjoserUserViewSet, ):
-    pass
+class UserViewSet(DjoserUserViewSet, AddDeleteM2MMixin):
+    http_method_names = ['get', 'post', 'delete']
+    add_delete_serializer = UserSerializer
 
+    @action(
+        detail=False,
+        methods=[
+            'get',
+        ],
+    )
+    def subscriptions(self, request):
+        user = self.request.user
+        subscriptions = user.subscribes.all()
+        pages = self.paginate_queryset(subscriptions)
+        serializer = self.get_serializer(
+            pages,
+            many=True,
+            context={'action': self.action}
+        )
+        return self.get_paginated_response(serializer.data)
 
-    # @action(methods=['get', 'post', 'delete'], detail=True)
-    # def subscribe(self, request, id):
-    #     return self.add_delete_relationships(id, conf.SUBSCRIBE_M2M)
-
-
+    @action(
+        detail=True,
+        methods=[
+            'post',
+            'delete',
+        ],
+    )
+    def subscribe(self, request, pk=None):
+        return self.add_delete_object(
+            obj_id=pk,
+            field=request.user.subscribes
+        )

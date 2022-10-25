@@ -31,7 +31,7 @@ class RecipeAdmin(admin.ModelAdmin):
     readonly_fields = ('pub_date',)
     search_fields = ('name',)
     empty_value_display = '-пусто-'
-    inlines = (IngredientInLine, )
+    inlines = (IngredientInLine,)
 
 
 @admin.register(Tag)
@@ -56,13 +56,12 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', 'measurement_unit')
     empty_value_display = '-пусто-'
 
+
 @admin.register(RecipeIngredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
-        'recipes',
-        'ingredients',
+        'recipe',
+        'ingredient',
     )
     empty_value_display = '-пусто-'
-
-#dmin.site.register(RecipeIngredient)

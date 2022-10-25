@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'django_filters',
     'corsheaders',
-    'auth_api.apps.AuthApiConfig',
+    'drf_pdf',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
 ]
@@ -121,34 +122,32 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 6,
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.PageLimitPagination',
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         #'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-#         'rest_framework.permissions.AllowAny'
-#     ],
-#
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#     ],
-# }
 
+
+if DEBUG:
+    AUTH_TOKEN_VALIDITY = timedelta(days=30)
 
 DJOSER = {
-    'LOGIN_FIELD': 'email',
     'SERIALIZERS': {
         'user': 'users.serializers.UserSerializer',
         'user_list': 'users.serializers.UserSerializer',
         'current_user': 'users.serializers.UserSerializer',
-        'user_create': 'users.serializers.UserSerializer',
+        'user_create': 'users.serializers.CustomUserCreateSerializer',
+    },
+    'PERMISSIONS': {
+        'user': ('rest_framework.permissions.IsAuthenticated',),
+        'user_list': ('rest_framework.permissions.IsAuthenticated',),
     },
 }
 
@@ -168,11 +167,17 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
+# # Static files (CSS, JavaScript, Images)
+# # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+PDF_ROOT = os.path.join(MEDIA_ROOT, 'pdf')
+
+LOGO_IMAGE_FOR_PDF = os.path.join(PDF_ROOT, 'logo.jpg')
+LIST_IMAGE_FOR_PDF = os.path.join(PDF_ROOT, 'list.jpg')
+PDF_FILE_PREFIX = 'shopping_cart'
