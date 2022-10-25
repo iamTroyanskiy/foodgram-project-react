@@ -3,7 +3,7 @@ from rest_framework.routers import SimpleRouter
 
 from .views import UserViewSet
 
-app_name = 'api_users'
+app_name = 'users'
 
 router = SimpleRouter()
 router.register(r'users', UserViewSet, basename='users')

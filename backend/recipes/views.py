@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from drf_pdf.renderer import PDFRenderer
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.mixins import AddDeleteM2MMixin
 from api.permissions import AdminAuthorOrReadOnly
@@ -25,7 +25,7 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet, AddDeleteM2MMixin):
@@ -96,6 +96,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (IngredientSearchFilter,)
     search_fields = ('name',)
