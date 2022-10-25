@@ -36,8 +36,8 @@ class UserViewSet(DjoserUserViewSet, AddDeleteM2MMixin):
             'delete',
         ],
     )
-    def subscribe(self, request, pk=None):
+    def subscribe(self, request, id=None):
         return self.add_delete_object(
-            obj_id=pk,
+            obj_id=id,
             field=request.user.subscribes
         )
