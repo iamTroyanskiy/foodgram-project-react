@@ -12,25 +12,20 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from datetime import timedelta
+
+from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+SECRET_KEY = config('SECRET_KEY', default='AAAA-AAAA-AAAA-AAAA')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8(h!noj7#^3uzq9-p%&%c#_dk4)&-j+fhxav5fk)x068x)6s0v'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
-# Application definition
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,18 +75,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
-#
-# AUTHENTICATION_BACKENDS = (
-#     ('django.contrib.auth.backends.ModelBackend'),
-# )
-
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -101,9 +87,6 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "users.CustomUser"
-
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -124,7 +107,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
@@ -133,7 +115,6 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
-
 
 if DEBUG:
     AUTH_TOKEN_VALIDITY = timedelta(days=30)
@@ -153,9 +134,6 @@ DJOSER = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-# Internationalization
-# https://docs.djangoproject.com/en/2.2/topics/i18n/
-
 LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Europe/Moscow'
@@ -165,10 +143,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# # Static files (CSS, JavaScript, Images)
-# # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -180,4 +154,3 @@ PDF_ROOT = os.path.join(MEDIA_ROOT, 'pdf')
 
 LOGO_IMAGE_FOR_PDF = os.path.join(PDF_ROOT, 'logo.jpg')
 LIST_IMAGE_FOR_PDF = os.path.join(PDF_ROOT, 'list.jpg')
-PDF_FILE_PREFIX = 'shopping_cart'

@@ -2,13 +2,13 @@ from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
 from djoser.views import UserViewSet as DjoserUserViewSet
 
-from api.mixins import AddDeleteM2MMixin
+from api.mixins import AddDeleteManyToManyMixin
 from .serializers import UserSerializer
 
 User = get_user_model()
 
 
-class UserViewSet(DjoserUserViewSet, AddDeleteM2MMixin):
+class UserViewSet(DjoserUserViewSet, AddDeleteManyToManyMixin):
     http_method_names = ['get', 'post', 'delete']
     add_delete_serializer = UserSerializer
 

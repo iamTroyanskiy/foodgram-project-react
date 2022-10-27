@@ -20,6 +20,7 @@ class Api {
         return res.blob().then(blob => {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
+          a.download = res.headers.get('Content-Disposition').split('filename=')[1].replace(";", "");
           a.href = url;
           document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
           a.click();    

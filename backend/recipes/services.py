@@ -22,6 +22,8 @@ from recipes.models import RecipeIngredient
 
 
 def shopping_cart_to_pdf(user):
+    PDF_FILE_PREFIX = 'shopping_cart'
+
     today = date.today()
     path_pattern = '%d%m%Y'
     data_pattern = '%d/%m/%Y'
@@ -42,12 +44,12 @@ def shopping_cart_to_pdf(user):
             alignment=TA_CENTER,
         )
     )
-
-    pdf_file_name = (
-        settings.PDF_FILE_PREFIX
-        + f"_{today.strftime(path_pattern)}.pdf"
+    filename = (
+        PDF_FILE_PREFIX
+        + f'_{today.strftime(path_pattern)}.pdf'
     )
-    pdf_path = os.path.join(settings.PDF_ROOT, pdf_file_name)
+    pdf_filename = filename + '.pdf'
+    pdf_path = os.path.join(settings.PDF_ROOT, pdf_filename)
     pdf_file = SimpleDocTemplate(
         pdf_path,
         pagesize=letter,
@@ -109,7 +111,7 @@ def shopping_cart_to_pdf(user):
         shopping_cart.append(unit)
 
     pdf_file.build(shopping_cart)
-    return pdf_path, pdf_file_name
+    return pdf_path, filename
 
 
 def add_ingredients_to_recipe(ingredients_data, recipe):

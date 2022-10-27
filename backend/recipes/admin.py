@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Recipe, Tag, Ingredient, RecipeIngredient
+from .models import Recipe, Tag, Ingredient
 
 
 class IngredientInLine(admin.StackedInline):
@@ -32,6 +32,7 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     empty_value_display = '-пусто-'
     inlines = (IngredientInLine,)
+    list_filter = ('name', 'author', 'tags')
 
 
 @admin.register(Tag)
@@ -55,13 +56,4 @@ class IngredientAdmin(admin.ModelAdmin):
     )
     search_fields = ('name', 'measurement_unit')
     empty_value_display = '-пусто-'
-
-
-@admin.register(RecipeIngredient)
-class IngredientAdmin(admin.ModelAdmin):
-    list_display = (
-        'pk',
-        'recipe',
-        'ingredient',
-    )
-    empty_value_display = '-пусто-'
+    list_filter = ('name',)

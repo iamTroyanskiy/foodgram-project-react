@@ -21,14 +21,6 @@ class TagSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeTagSerializer(serializers.PrimaryKeyRelatedField):
-
-    def to_representation(self, value):
-        if self.pk_field is not None:
-            return self.pk_field.to_representation(value.pk)
-        return TagSerializer(value).data
-
-
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
@@ -73,6 +65,14 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
             'measurement_unit',
             'amount',
         )
+
+
+class RecipeTagSerializer(serializers.PrimaryKeyRelatedField):
+
+    def to_representation(self, value):
+        if self.pk_field is not None:
+            return self.pk_field.to_representation(value.pk)
+        return TagSerializer(value).data
 
 
 class RecipeSerializer(serializers.ModelSerializer):

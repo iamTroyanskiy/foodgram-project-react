@@ -3,11 +3,12 @@ from wsgiref.util import FileWrapper
 
 from django.http import HttpResponse
 from drf_pdf.renderer import PDFRenderer
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
-from api.mixins import AddDeleteM2MMixin
+from api.mixins import AddDeleteManyToManyMixin
 from api.permissions import AdminAuthorOrReadOnly
 from recipes.filters import RecipeFilter, IngredientSearchFilter
 from recipes.models import Tag, Ingredient, Recipe
@@ -28,7 +29,7 @@ class TagViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
-class RecipeViewSet(viewsets.ModelViewSet, AddDeleteM2MMixin):
+class RecipeViewSet(viewsets.ModelViewSet, AddDeleteManyToManyMixin):
     http_method_names = ('get', 'post', 'patch', 'delete')
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
@@ -74,7 +75,7 @@ class RecipeViewSet(viewsets.ModelViewSet, AddDeleteM2MMixin):
     )
     def download_shopping_cart(self, request):
         user = request.user
-        file_path, file_name = shopping_cart_to_pdf(user)
+        file_path, filename = shopping_cart_to_pdf(user)
 
         try:
             with open(file_path, 'rb') as pdf_file:
@@ -83,10 +84,14 @@ class RecipeViewSet(viewsets.ModelViewSet, AddDeleteM2MMixin):
                     content_type='application/pdf'
                 )
                 response['Content-Disposition'] = (
-                    f'attachment; filename={file_name}'
+                    f'attachment; filename={filename}'
                 )
                 return response
-
+        except IOError as error:
+            return Response(
+                {'error': str(error)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
         finally:
             os.remove(file_path)
 
