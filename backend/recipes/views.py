@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from api.mixins import AddDeleteManyToManyMixin
+from api.pagination import PageLimitPagination
 from api.permissions import AdminAuthorOrReadOnly
 from recipes.filters import RecipeFilter, IngredientSearchFilter
 from recipes.models import Tag, Ingredient, Recipe
@@ -25,7 +26,6 @@ class TagViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', )
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    pagination_class = None
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
@@ -35,6 +35,7 @@ class RecipeViewSet(viewsets.ModelViewSet, AddDeleteManyToManyMixin):
     serializer_class = RecipeSerializer
     add_delete_serializer = RecipeMinifiedSerializer
     permission_classes = (AdminAuthorOrReadOnly,)
+    pagination_class = PageLimitPagination
     filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
@@ -100,7 +101,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', )
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    pagination_class = None
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (IngredientSearchFilter,)
     search_fields = ('name',)

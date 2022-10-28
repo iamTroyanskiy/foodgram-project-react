@@ -10,17 +10,6 @@ from .services import add_ingredients_to_recipe
 User = get_user_model()
 
 
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = (
-            'id',
-            'name',
-            'color',
-            'slug',
-        )
-
-
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
@@ -67,20 +56,25 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeTagSerializer(serializers.PrimaryKeyRelatedField):
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = (
+            'id',
+            'name',
+            'color',
+            'slug',
+        )
 
-    def to_representation(self, value):
-        if self.pk_field is not None:
-            return self.pk_field.to_representation(value.pk)
-        return TagSerializer(value).data
+    def to_internal_value(self, data):
+        return serializers.PrimaryKeyRelatedField(
+            queryset=Tag.objects.all()
+        ).to_internal_value(data)
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-
-    tags = RecipeTagSerializer(
+    tags = TagSerializer(
         many=True,
-        queryset=Tag.objects.all(),
-        allow_empty=False,
     )
     author = UserSerializer(
         read_only=True,
@@ -88,7 +82,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
     ingredients = RecipeIngredientSerializer(
         source='ingredient_amount',
-        many=True
+        many=True,
     )
     image = Base64ImageField()
     is_favorited = serializers.SerializerMethodField()
@@ -120,11 +114,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         ingredients_data = validated_data.pop('ingredient_amount')
         recipe = Recipe.objects.create(**validated_data)
-        ingredients_in_recipe = add_ingredients_to_recipe(
+        add_ingredients_to_recipe(
             ingredients_data,
             recipe
         )
-        recipe.ingredient_amount.set(ingredients_in_recipe)
         recipe.tags.set(tags)
         return recipe
 
@@ -133,11 +126,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop('ingredient_amount')
         recipe = super().update(recipe, validated_data)
         if ingredients_data:
-            ingredients_in_recipe = add_ingredients_to_recipe(
+            recipe.ingredient_amount.all().delete()
+            add_ingredients_to_recipe(
                 ingredients_data,
                 recipe
             )
-            recipe.ingredient_amount.set(ingredients_in_recipe, clear=True)
         if tags:
             recipe.tags.set(tags)
         return recipe
@@ -154,5 +147,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             return False
         return user.shopping_cart.filter(id=obj.id).exists()
 
-    def validate_name(self, value):
-        return value.capitalize()
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+        data['name'] = data['name'].capitalize()
+        return data

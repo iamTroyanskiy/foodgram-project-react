@@ -1,33 +1,41 @@
 from django.contrib.auth import get_user_model
-from djoser.serializers import UserSerializer as DjoserUserSerializer
+from djoser.serializers import (
+    UserSerializer as DjoserUserSerializer,
+    UserCreateSerializer
+)
 from rest_framework.fields import SerializerMethodField
 
-from users.services import lower_normalize_value
+from users.services import normalize_fields, validate_unique
 
 User = get_user_model()
 
 
-class CustomUserCreateSerializer(DjoserUserSerializer):
+class CustomUserCreateSerializer(UserCreateSerializer):
+
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+        fields_to_lower_normalize = ('username', 'email')
+        fields_to_capitalize_normalize = ('first_name', 'last_name')
+        normalize_data = normalize_fields(
+            data=data,
+            fields_to_lower_normalize=fields_to_lower_normalize,
+            fields_to_capitalize_normalize=fields_to_capitalize_normalize
+        )
+        return normalize_data
 
     def validate_username(self, value):
-        return lower_normalize_value(
-            model=User,
+        validate_unique(
             field_name='username',
             field_value=value
         )
+        return value
 
     def validate_email(self, value):
-        return lower_normalize_value(
-            model=User,
+        validate_unique(
             field_name='email',
             field_value=value
         )
-
-    def validate_first_name(self, value):
-        return value.capitalize()
-
-    def validate_last_name(self, value):
-        return value.capitalize()
+        return value
 
 
 class UserSerializer(DjoserUserSerializer):
@@ -59,19 +67,3 @@ class UserSerializer(DjoserUserSerializer):
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
-
-#
-# class SubscribeUserSerializer(UserSerializer):
-#     recipes = MiniRecipeSerializer(
-#                 many=True,
-#                 read_only=True,
-#             )
-#     recipes_count = SerializerMethodField(
-#                 read_only=True,
-#             )
-#
-#     class Meta(UserSerializer.Meta):
-#         fields = UserSerializer.Meta.fields + (
-#             'recipes',
-#             'recipes_count',
-#         )

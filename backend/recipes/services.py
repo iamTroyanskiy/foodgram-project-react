@@ -115,7 +115,6 @@ def shopping_cart_to_pdf(user):
 
 
 def add_ingredients_to_recipe(ingredients_data, recipe):
-    ingredients_in_recipe = []
     for values_dict in ingredients_data:
         ingredient = values_dict['ingredient']['id']
         amount = values_dict['amount']
@@ -124,5 +123,3 @@ def add_ingredients_to_recipe(ingredients_data, recipe):
             ingredient=ingredient,
             amount=amount
         )
-        ingredients_in_recipe.append(ingredient_in_recipe)
-    return ingredients_in_recipe
