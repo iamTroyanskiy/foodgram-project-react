@@ -21,7 +21,7 @@ class AddDeleteManyToManyMixin:
             context={'request': self.request}
         )
         obj_exist = field.filter(id=obj_id).exists()
-        if (self.request.method == 'POST') and not obj_exist:
+        if self.request.method == 'POST' and not obj_exist:
             field.add(obj)
             return Response(serializer.data, status=HTTP_201_CREATED)
         if self.request.method == 'DELETE' and obj_exist:
