@@ -45,7 +45,7 @@
 - GitHub Actions
 - Выделенный сервер Linux Ubuntu 22.04 с публичным IP
 
-## Установка
+## Локальная установка
 1. Склонировать репозиторий и перейти в папку с проектом командами :
  ```
  git clone git@github.com:tonik350/foodgram-project-react.git
