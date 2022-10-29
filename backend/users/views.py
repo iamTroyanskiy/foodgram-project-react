@@ -21,7 +21,6 @@ class UserViewSet(DjoserUserViewSet, AddDeleteManyToManyMixin):
         methods=[
             'get',
         ],
-
     )
     def subscriptions(self, request):
         user = self.request.user
