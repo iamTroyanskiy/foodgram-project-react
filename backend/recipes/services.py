@@ -22,7 +22,7 @@ from recipes.models import RecipeIngredient
 
 
 def shopping_cart_to_pdf(user):
-    PDF_FILE_PREFIX = 'shopping_cart'
+    pdf_file_prefix = 'shopping_cart'
 
     today = date.today()
     path_pattern = '%d%m%Y'
@@ -45,7 +45,7 @@ def shopping_cart_to_pdf(user):
         )
     )
     filename = (
-        PDF_FILE_PREFIX
+        pdf_file_prefix
         + f'_{today.strftime(path_pattern)}.pdf'
     )
     pdf_filename = filename + '.pdf'

@@ -16,12 +16,11 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         data = super().to_internal_value(data)
         fields_to_lower_normalize = ('username', 'email')
         fields_to_capitalize_normalize = ('first_name', 'last_name')
-        normalize_data = normalize_fields(
+        return normalize_fields(
             data=data,
             fields_to_lower_normalize=fields_to_lower_normalize,
             fields_to_capitalize_normalize=fields_to_capitalize_normalize
         )
-        return normalize_data
 
     def validate_username(self, value):
         validate_unique(
