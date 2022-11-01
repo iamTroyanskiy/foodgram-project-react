@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_400_BAD_REQUEST
 
 from api.mixins import AddDeleteManyToManyMixin
 from api.pagination import PageLimitPagination
@@ -26,15 +26,12 @@ class UserViewSet(DjoserUserViewSet, AddDeleteManyToManyMixin):
         user = self.request.user
         subscriptions = user.subscribes.all()
         pages = self.paginate_queryset(subscriptions)
-        if pages:
-            serializer = self.get_serializer(
-                pages,
-                many=True,
-                context={'action': self.action}
-            )
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(subscriptions, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
+        serializer = self.get_serializer(
+            pages,
+            many=True,
+            context={'action': self.action}
+        )
+        return self.get_paginated_response(serializer.data)
 
     @action(
         detail=True,
