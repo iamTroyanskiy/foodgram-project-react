@@ -48,7 +48,7 @@ jobs:
   #            sudo rm -rf foodgram
   #            mkdir foodgram
 
-      - name: Copy infra files
+      - name: Copy infra  files
         uses: garygrossgarten/github-action-scp@release
         with:
             local: infra/
