@@ -92,8 +92,8 @@ def shopping_cart_to_pdf(user):
         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, -1), 'User_font'),
-        ('FONTSIZE', (0, 0), (-1, -1), 25),
-        ('LEADING', (0, 0), (-1, -1), 35),
+        ('FONTSIZE', (0, 0), (-1, -1), 15),
+        ('LEADING', (0, 0), (-1, -1), 25),
     )))
 
     footer = Paragraph('Приятного аппетита!', styles['Date'])
