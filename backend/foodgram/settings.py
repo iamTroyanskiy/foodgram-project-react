@@ -27,6 +27,7 @@ ALLOWED_HOSTS = [
     'localhost',
     'backend',
     '51.250.71.223',
+    'f00dgram.ddns.net',
 ]
 
 INSTALLED_APPS = [
