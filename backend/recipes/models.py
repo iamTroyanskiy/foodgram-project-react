@@ -150,6 +150,7 @@ class RecipeIngredient(models.Model):
         verbose_name='Ингредиент'
     )
     amount = models.PositiveSmallIntegerField(
+        blank=True,
         verbose_name='Количество',
     )
 
