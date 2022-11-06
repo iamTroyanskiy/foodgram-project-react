@@ -11,6 +11,7 @@ admin.site.unregister(Group)
 admin.site.unregister(TokenProxy)
 admin.site.register(Token, TokenAdmin)
 
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
