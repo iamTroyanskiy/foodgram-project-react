@@ -16,6 +16,8 @@
 
 Онлайн-сервис Foodgram и API для него.Имеется реализация CI/CD проекта.На этом сервисе пользователи могут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список "Избранное", а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
+## Проект доступен по адресу [f00dgram.ddns.net](https://f00dgram.ddns.net)
+
 ### Доступный функционал
 
 - Аутентификация реализована с помощью стандартного модуля DRF - Authtoken.
@@ -46,27 +48,74 @@
 - GitHub Actions
 - Выделенный сервер Linux Ubuntu 22.04 с публичным IP
 
+## Установка на сервер
+- Клонировать репозиторий
+```
+git clone git@github.com:tonik350/foodgram-project-react.git
+```
+- Подключиться к серверу
+```
+ssh <server user>@<server IP>
+```
+- Установить Docker и Docker Compose на сервер
+```
+sudo apt install docker.io
+sudo apt install docker-compose
+```
+- Проверить их работоспособность
+```
+sudo docker --version
+sudo docker-compose --version
+```
+- Создать в домашней директории директорию 'foodgram'
+```
+mkdir foodgram && cd foodgram/
+```
+- Скопировать файлы из директории 'infra' (на локальной машине) в директорию 'infra' на сервере:
+```
+scp -r infra/* <server user>@<server IP>:/home/<server user>/foodgram/
+```
+- Создать в директории 'infra' env-файл
+```
+touch .env
+```
+- Заполнить env-файл
+```
+DEBUG=False
+DJANGO_SECRET_KEY=<Your_some_long_string>
+DB_ENGINE='django.db.backends.postgresql'
+POSTGRES_DB='foodgram'
+POSTGRES_USER='foodgram_user'
+POSTGRES_PASSWORD=<Your_password>
+DB_HOST='db'
+DB_PORT=5432
+```
+- Запустить docker-compose
+```
+sudo docker-compose up -d
+```
+
 ## Локальная установка
-1. Склонировать репозиторий и перейти в папку с проектом командами :
+- Склонировать репозиторий и перейти в папку с проектом командами :
  ```
  git clone git@github.com:tonik350/foodgram-project-react.git
  ```
-2. Установить виртуальное окружение и активировать его:
+- Установить виртуальное окружение и активировать его:
 ```
  python3 -m venv venv
  ```
  ```
  source venv/bin/activate
  ```
-3. Установить зависимости из файла requirements.txt
+- Установить зависимости из файла requirements.txt
 ```
 pip install -r requirements.txt
 ```
-4. Выполнить миграции:
+- Выполнить миграции:
 ```
 python3 manage.py migrate
 ```
-5. Запустить сервер командой
+- Запустить сервер командой
 ```
 python3 manage.py runserver
 ```
